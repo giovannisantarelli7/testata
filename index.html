@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Per chi ricostruire · Variante A full width</title>
+  <style>
+    :root {
+      --bg: #f7f2eb;
+      --panel: rgba(255,255,255,0.92);
+      --line: rgba(50,33,20,0.14);
+      --text: #1f1a17;
+      --muted: #6c625a;
+      --shadow: 0 18px 45px rgba(46,28,15,0.10);
+      --shadow-soft: 0 10px 28px rgba(46,28,15,0.08);
+      --brick: #9b4a33;
+      --brown: #8c6340;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      align-items: start;
+      overflow: clip;
+      border-bottom: 1px solid var(--line);
+      background: #ddd0be;
+    }
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0d0a08;
+    }
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(14,10,7,0.10) 0%, rgba(14,10,7,0.16) 34%, rgba(14,10,7,0.60) 100%);
+      pointer-events: none;
+    }
+    .hero-media iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 56.25vw;
+      min-width: 177.78vh;
+      min-height: 100vh;
+      transform: translate(-50%, -50%) scale(1.06);
+      transform-origin: center;
+      border: 0;
+      pointer-events: none;
+    }
+    .hero-video-fallback {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      z-index: 2;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(17, 12, 9, 0.55);
+      color: #fff8f1;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .hero-video-fallback.is-hidden {
+      display: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: min(1180px, calc(100% - 48px));
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      align-items: start;
+      padding: 8vh 0 14vh;
+    }
+    .hero-card {
+      width: min(760px, 100%);
+      padding: 22px 24px 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 18px 45px rgba(12,8,6,0.16);
+      color: #fff8f1;
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 800ms ease, transform 800ms ease;
+    }
+    .hero-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      margin-bottom: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,248,241,0.9);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5.8vw, 78px);
+      line-height: 0.98;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      max-width: none;
+      white-space: nowrap;
+    }
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 38ch;
+      font-size: clamp(18px, 2.2vw, 28px);
+      line-height: 1.22;
+      color: rgba(255,248,241,0.92);
+    }
+    .subtitle-top,
+    .subtitle-bottom {
+      display: block;
+    }
+    .subtitle-bottom {
+      margin-top: 0.35em;
+    }
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      z-index: 2;
+      transform: translateX(-50%);
+      display: grid;
+      place-items: center;
+      gap: 8px;
+      color: rgba(255,248,241,0.84);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .scroll-cue::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg);
+      animation: bounce 1.8s infinite;
+    }
+
+    .intro {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 6vh 24px 8vh;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.7fr);
+      gap: 26px;
+      align-items: start;
+    }
+    .intro-copy, .note-card {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+    .intro-copy.is-visible, .note-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .kicker {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .intro h2 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.02;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .intro p {
+      margin: 0;
+      font-size: 19px;
+      max-width: 34ch;
+    }
+    .note-card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.8; }
+      50% { transform: rotate(45deg) translate(6px, 6px); opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner { width: min(100%, calc(100% - 28px)); min-height: 100vh; padding: 9vh 0 12vh; }
+      .hero-card { padding: 18px 18px 16px; }
+      .intro { grid-template-columns: 1fr; padding: 5vh 18px 7vh; }
+      .intro p { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-media">
+      <iframe
+        id="hero-vimeo"
+        src="https://player.vimeo.com/video/1179729388?autoplay=1&loop=1&muted=1&autopause=0&playsinline=1&title=0&byline=0&portrait=0&dnt=1"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        allowfullscreen
+        frameborder="0"
+        loading="eager"
+        title="Video di sfondo">
+      </iframe>
+      <button class="hero-video-fallback" id="hero-video-fallback" type="button">Attiva video</button>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-card observe">
+        <h1>Per chi ricostruire</h1>
+        <p class="subtitle"><span class="subtitle-top">A dieci anni dal terremoto del Centro Italia</span></p>
+      </div>
+    </div>
+    <div class="scroll-cue">Scorri</div>
+  </header>
+
+  <section class="intro">
+    <div class="intro-copy observe">
+      <h2>Dalle scosse del 26 e del 30 ottobre 2016 la domanda su case, legami, sicurezza e futuro resta aperta</h2>
+      <p>Ma il cratere ha aggiunto una lezione su prevenzione, gestione dell’emergenza e sul futuro delle aree interne</p>
+    </div>
+  </section>
+
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script>
+    const heroVimeo = document.getElementById('hero-vimeo');
+    const heroVideoFallback = document.getElementById('hero-video-fallback');
+
+    if (heroVimeo && window.Vimeo) {
+      const heroPlayer = new Vimeo.Player(heroVimeo);
+
+      const tryPlay = () => {
+        heroPlayer.setMuted(true).catch(() => {});
+        heroPlayer.setVolume(0).catch(() => {});
+        heroPlayer.play().catch(() => {
+          heroVideoFallback?.classList.remove('is-hidden');
+        });
+      };
+
+      heroPlayer.ready().then(() => {
+        tryPlay();
+      }).catch(() => {
+        heroVideoFallback?.classList.remove('is-hidden');
+      });
+
+      heroPlayer.on('play', () => {
+        heroVideoFallback?.classList.add('is-hidden');
+      });
+
+      heroPlayer.on('pause', () => {
+        heroVideoFallback?.classList.remove('is-hidden');
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) tryPlay();
+      });
+
+      heroVideoFallback?.addEventListener('click', () => {
+        tryPlay();
+      });
+    }
+
+    const observed = document.querySelectorAll('.observe');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.15 });
+    observed.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
