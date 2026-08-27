@@ -39,28 +39,11 @@
       background: #0d0a08;
     }
 
-    .hero-poster {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: url("./primo-frame.jpg") center center / cover no-repeat;
-      transform: scale(1.06);
-      transform-origin: center;
-      opacity: 1;
-      transition: opacity 650ms ease;
-      will-change: opacity;
-      pointer-events: none;
-    }
-
-    .hero-poster.is-hidden {
-      opacity: 0;
-    }
-
     .hero-media::after {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: 2;
+      z-index: 1;
       pointer-events: none;
       background: linear-gradient(
         180deg,
@@ -83,19 +66,11 @@
       transform-origin: center;
       border: 0;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 650ms ease;
-      will-change: opacity;
-    }
-
-    .hero-media.is-video-live iframe {
-      opacity: 1;
     }
 
     .hero-inner {
       position: relative;
-      z-index: 3;
+      z-index: 2;
       width: min(1180px, calc(100% - 48px));
       min-height: 100vh;
       margin: 0 auto;
@@ -180,7 +155,7 @@
       position: absolute;
       left: 50%;
       bottom: 22px;
-      z-index: 4;
+      z-index: 2;
       transform: translateX(-50%);
       display: grid;
       place-items: center;
@@ -207,7 +182,7 @@
     }
 
     .page-spacer {
-      min-height: 10vh;
+      min-height: 60vh;
       background: var(--bg);
     }
 
@@ -250,9 +225,7 @@
 </head>
 <body>
   <header class="hero">
-    <div class="hero-media" id="hero-media">
-      <div class="hero-poster" id="hero-poster" aria-hidden="true"></div>
-
+    <div class="hero-media">
       <iframe
         id="hero-vimeo"
         src="https://player.vimeo.com/video/1179729388?background=1&autoplay=1&loop=1&muted=1&autopause=0&playsinline=1&title=0&byline=0&portrait=0&controls=0&dnt=1&transparent=0"
@@ -282,59 +255,14 @@
 
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script>
-    const heroMedia = document.getElementById('hero-media');
-    const heroPoster = document.getElementById('hero-poster');
     const heroVimeo = document.getElementById('hero-vimeo');
 
     if (heroVimeo && window.Vimeo) {
       const heroPlayer = new Vimeo.Player(heroVimeo);
-      let hasStartedPlaying = false;
-      let hasAdvancedTime = false;
-      let revealDone = false;
-      let revealTimer = null;
-
-      const revealVideo = () => {
-        if (revealDone) return;
-        revealDone = true;
-        heroMedia?.classList.add('is-video-live');
-
-        window.requestAnimationFrame(() => {
-          heroPoster?.classList.add('is-hidden');
-        });
-      };
-
-      const maybeRevealVideo = () => {
-        if (revealDone) return;
-        if (!hasStartedPlaying || !hasAdvancedTime) return;
-
-        window.clearTimeout(revealTimer);
-        revealTimer = window.setTimeout(revealVideo, 220);
-      };
-
       heroPlayer.ready().then(() => {
         heroPlayer.setMuted(true).catch(() => {});
         heroPlayer.setVolume(0).catch(() => {});
         heroPlayer.play().catch(() => {});
-
-        heroPlayer.on('play', () => {
-          hasStartedPlaying = true;
-        });
-
-        heroPlayer.on('playing', () => {
-          hasStartedPlaying = true;
-          maybeRevealVideo();
-        });
-
-        heroPlayer.on('bufferend', () => {
-          maybeRevealVideo();
-        });
-
-        heroPlayer.on('timeupdate', (data) => {
-          if (data.seconds >= 0.12 || data.percent > 0.001) {
-            hasAdvancedTime = true;
-          }
-          maybeRevealVideo();
-        });
       }).catch(() => {});
     }
 
